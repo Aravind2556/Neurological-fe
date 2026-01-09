@@ -10,16 +10,74 @@ const DataContext = ({children}) => {
     const [isAuth, setIsAuth] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
 
-    const [fieldOne, setFieldOne] = useState(null)
-    const [fieldTwo, setFieldTwo] = useState(null)
-    const [fieldThree, setFieldThree] = useState(null)
-    const [fieldFour, setFieldFour] = useState(null)
-    // const [fieldFive, setFieldFive] = useState(null)
+    const [fieldOne, setFieldOne] = useState([])
+    const [fieldTwo, setFieldTwo] = useState([])
+    const [fieldThree, setFieldThree] = useState([])
+    const [fieldFour, setFieldFour] = useState([])
+    const [fieldFive, setFieldFive] = useState([])
+    const [fieldSix, setFieldSix] = useState([])
 
+    console.log("filedOne",fieldOne['y-axis'])
 
-    console.log("filedOne", fieldOne)
-    console.log("filedOne",fieldOne)
+    const filedOneValue = Array.isArray(fieldOne?.['y-axis'])
+        ? fieldOne['y-axis'].map(item => {
+            const obj = {};
+            item.split(",").slice(0, 13).forEach((value, index) => {
+                obj[`f${index + 1}`] = Number(value);
+            });
+            return obj;
+        })
+        : [];
 
+    const filedTwoValue = Array.isArray(fieldTwo?.['y-axis'])
+        ? fieldOne['y-axis'].map(item => {
+            const obj = {};
+            item.split(",").slice(0, 13).forEach((value, index) => {
+                obj[`f${index + 1}`] = Number(value);
+            });
+            return obj;
+        })
+        : [];
+
+    const filedThreeValue = Array.isArray(fieldThree?.['y-axis'])
+        ? fieldOne['y-axis'].map(item => {
+            const obj = {};
+            item.split(",").slice(0, 13).forEach((value, index) => {
+                obj[`f${index + 1}`] = Number(value);
+            });
+            return obj;
+        })
+        : [];
+
+    const filedFourValue = Array.isArray(fieldFour?.['y-axis'])
+        ? fieldOne['y-axis'].map(item => {
+            const obj = {};
+            item.split(",").slice(0, 13).forEach((value, index) => {
+                obj[`f${index + 1}`] = Number(value);
+            });
+            return obj;
+        })
+        : [];
+
+    const filedFiveValue = Array.isArray(fieldFive?.['y-axis'])
+        ? fieldOne['y-axis'].map(item => {
+            const obj = {};
+            item.split(",").slice(0, 13).forEach((value, index) => {
+                obj[`f${index + 1}`] = Number(value);
+            });
+            return obj;
+        })
+        : [];
+
+    const filedSixValue = Array.isArray(fieldSix?.['y-axis'])
+        ? fieldOne['y-axis'].map(item => {
+            const obj = {};
+            item.split(",").slice(0, 13).forEach((value, index) => {
+                obj[`f${index + 1}`] = Number(value);
+            });
+            return obj;
+        })
+        : [];
 
     const [recentFieldOne, setRecentFieldOne] = useState(null)
     const [recentFieldTwo, setRecentFieldTwo] = useState(null)
@@ -77,60 +135,92 @@ const DataContext = ({children}) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const res = await fetch(THINGSPEAK_URL);
-                const data = await res.json();
-                if (data?.feeds?.length > 0) {
-                    const xAxis = data.feeds.map(feed =>
-                        new Date(feed.created_at).getTime()
-                    );
-                    // g1 → g13 structure
-                    const groups = {};
-                    for (let i = 1; i <= 16; i++) {
-                        groups[`g${i}`] = [];
+            fetch(THINGSPEAK_URL)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("data:", data)
+                    if (data && data.feeds && data.feeds.length > 0) {
+                        const xAxis = data.feeds.map(feed => new Date(feed.created_at).getTime())
+
+                        setFieldOne({
+                            "x-axis": xAxis,
+                            "y-axis": data.feeds.map(feed => (feed.field1) || 0),
+                            color: "green",
+                            seriesName: 'Temperature'
+                        })
+
+                        setFieldTwo({
+                            "x-axis": xAxis,
+                            "y-axis": data.feeds.map(feed => (feed.field2) || 0),
+                            color: "green",
+                            seriesName: 'Temperature'
+                        })
+
+                        setFieldThree({
+                            "x-axis": xAxis,
+                            "y-axis": data.feeds.map(feed => (feed.field3) || 0),
+                            color: "green",
+                            seriesName: 'Temperature'
+                        })
+
+                        setFieldFour({
+                            "x-axis": xAxis,
+                            "y-axis": data.feeds.map(feed => (feed.field4) || 0),
+                            color: "green",
+                            seriesName: 'Temperature'
+                        })
+
+                        setFieldFive({
+                            "x-axis": xAxis,
+                            "y-axis": data.feeds.map(feed => (feed.field5) || 0),
+                            color: "green",
+                            seriesName: 'Temperature'
+                        })
+
+                        setFieldSix({
+                            "x-axis": xAxis,
+                            "y-axis": data.feeds.map(feed => (feed.field6) || 0),
+                            color: "green",
+                            seriesName: 'Temperature'
+                        })
+
                     }
-                    // Split field1 values
-                    data.feeds.forEach(feed => {
-                        if (!feed.field1) return;
-                        const values = feed.field1
-                            .split(',')
-                            .map(v => Number(v) || 0);
-
-                        values.forEach((value, index) => {
-                            const key = `g${index + 1}`;
-                            if (groups[key]) {
-                                groups[key].push(value);
-                            }
-                        });
-                    });
-
-                    // Convert to chart series format
-                    const seriesData = Object.keys(groups).map((key, index) => ({
-                        "x-axis": xAxis,
-                        "y-axis": groups[key],
-                        color: `hsl(${index * 25}, 70%, 50%)`,
-                        seriesName: key.toUpperCase()
-                    }));
-                    setFieldOne(seriesData);
-
-                } else {
-                    setFieldOne([]);
-                }
-            } catch (err) {
-                console.log("Error in fetching from ThingSpeak:", err);
-            }
+                    else {
+                        setFieldOne({
+                            "x-axis": [],
+                            "y-axis": [],
+                            color: "black",
+                            seriesName: 'Green'
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log("Error in fetching from Thinkspeak:", err)
+                })
         };
-
-        let intervalId;
+        let intervalId
         if (THINGSPEAK_URL) {
             fetchData();
+            // Optionally, set up polling for live data updates (e.g., every 30 seconds)
             intervalId = setInterval(fetchData, 5000);
         }
-
-        return () => clearInterval(intervalId);
+        return () => clearInterval(intervalId); // Cleanup on component unmount
     }, [THINGSPEAK_URL]);
 
-    const data = {isAuth, currentUser, setIsAuth, setCurrentUser, BeURL, handleLogout}
+    const controls = {
+        show: true,
+        download: true,
+        selection: false,
+        zoom: false,
+        zoomin: true,
+        zoomout: true,
+        pan: true,
+        reset: true,
+        zoomEnabled: true,
+        autoSelected: 'zoom'
+    };
+
+    const data = { isAuth, currentUser, setIsAuth, setCurrentUser, BeURL, handleLogout, filedOneValue, filedTwoValue, filedThreeValue, filedFourValue, filedFiveValue, filedSixValue, controls }
 
     return (
         <DContext.Provider value={data}>

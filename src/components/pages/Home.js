@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import LiveChart from '../blocks/LiveChart'
 import { DContext } from '../../context/Datacontext';
+import { MotorTest } from './MotorTest';
 
 function Home() {
 
@@ -148,29 +149,6 @@ function Home() {
   }, [url]);
 
 
-  // Ai - ml predict
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetch(`${BeURL}/fetch-ml-predict`, {
-        method: "GET",
-      })
-      .then(res=>res.json())
-      .then(data=>{
-        if(data.success){
-           setPredict(data.data)
-        }
-        else{
-         
-        }
-      })
-
-        .catch((err) => console.log(err));
-    }, 5000); // 5000ms = 5 seconds
-
-    return () => clearInterval(interval); 
-  }, []);
-
-console.log("predict" , recentHeartRate)
 
   if (!gripLevel || !temperature || !fallDetect || !batteryPercentage || !haertRate || !spo2 ) {
     return <div>Loading...</div>
@@ -179,6 +157,8 @@ console.log("predict" , recentHeartRate)
   
   return (
     <div className="mx-auto px-4 py-4 space-y-6">
+
+      <MotorTest />
 
       {/* MAIN CARD */}
       <div className="bg-white shadow-xl rounded-2xl p-6 border w-full max-w-2xl mx-auto">
