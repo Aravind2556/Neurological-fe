@@ -172,7 +172,7 @@ function Home() {
 
 console.log("predict" , recentHeartRate)
 
-  if (!gripLevel || !temperature || !fallDetect || !batteryPercentage || !haertRate || !spo2 || !predict) {
+  if (!gripLevel || !temperature || !fallDetect || !batteryPercentage || !haertRate || !spo2 ) {
     return <div>Loading...</div>
   }
 
