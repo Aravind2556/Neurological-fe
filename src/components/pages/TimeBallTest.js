@@ -188,7 +188,7 @@ const TimedBallTest = () => {
                         <div className="grid grid-cols-2 gap-4">
                             {[{ label: "Eye Blink Rate", value: f1 }, { label: "Saccadic Delay", value: f2 }].map(
                                 (item, i) => (
-                                    <div key={i} className="bg-white border rounded-xl p-4 shadow-sm">
+                                    <div key={i} className="bg-white rounded-xl shadow-md border-l-4 border-teal-500 p-4">
                                         <p className="text-xs text-gray-500 mb-1">{item.label}</p>
                                         <p className="text-2xl font-bold text-gray-800">{item.value}</p>
                                     </div>
