@@ -59,7 +59,7 @@ export const MotorTest = () => {
     const f13 = lastRowValues[12] ?? 0
 
     return (
-        <div className="px-3 md:px-10 py-6 bg-gray-100">
+        <div className="px-3 md:px-10 py-6">
             {/* MAIN CARD */}
             <div className="bg-white border rounded-2xl shadow-lg p-6 space-y-6">
                 {/* HEADER */}

@@ -50,6 +50,12 @@ export default function Speech() {
             <h2 className="text-lg font-semibold mb-4 text-gray-700">{title}</h2>
 
             <div className="grid grid-cols-3 gap-6">
+                <div className="space-y-4 border bg-gray-50 p-3 rounded-xl">
+                    <MetricCard title="Speech Rate" value={data.rate} unit="wpm" />
+                    <MetricCard title="Avg Pause" value={data.pause} unit="ms" />
+                    <MetricCard title="Avg Pitch" value={data.pitch} unit="Hz" />
+                    <MetricCard title="Loudness" value={data.loudness} unit="dB" />
+                </div>
                 <div className="col-span-2">
                     <CustomApexChart
                         data={[
@@ -67,12 +73,7 @@ export default function Speech() {
                     />
                 </div>
 
-                <div className="space-y-4">
-                    <MetricCard title="Speech Rate" value={data.rate} unit="wpm" />
-                    <MetricCard title="Avg Pause" value={data.pause} unit="ms" />
-                    <MetricCard title="Avg Pitch" value={data.pitch} unit="Hz" />
-                    <MetricCard title="Loudness" value={data.loudness} unit="dB" />
-                </div>
+
             </div>
         </div>
     );
@@ -131,11 +132,10 @@ export default function Speech() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+        <div className="min-h-screen p-6 border rounded-2xl">
 
             {/* Header */}
-            <div className="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-xl mb-12">
-
+            <div className="mx-auto bg-white p-8 rounded-2xl shadow-xl mb-12">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-700">
                         Speech & Cognitive Memory Test
@@ -202,7 +202,7 @@ export default function Speech() {
             </div>
 
             {/* Charts */}
-            <div className="max-w-6xl mx-auto space-y-12">
+            <div className="mx-auto space-y-12">
                 {activeModes.includes("numbers") && (
                     <SpeechBlock title="Numbers Speech Analysis" data={numbersValue} />
                 )}

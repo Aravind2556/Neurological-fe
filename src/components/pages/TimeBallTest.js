@@ -87,7 +87,7 @@ const TimedBallTest = () => {
     const f2 = lastRowValues[1] ?? 0;
 
     return (
-        <div>
+        <div className="px-3 md:px-10 py-6 border rounded-xl">
 
             {/* ================= TEST AREA ================= */}
             <div className={`${running ? "w-screen h-screen" : ""} bg-white overflow-hidden relative`}>
@@ -134,7 +134,7 @@ const TimedBallTest = () => {
             </div>
 
             {/* ================= LIVE CHART (ALWAYS RUNNING) ================= */}
-            <div className="px-3 md:px-10 py-6 bg-gray-100">
+        
                 <div className="bg-white border rounded-2xl shadow-lg p-6 space-y-6">
 
                     <div className="flex items-center justify-between">
@@ -173,7 +173,7 @@ const TimedBallTest = () => {
                         </div>
 
                         {/* CHART */}
-                        {/* <div className="lg:w-[70%] bg-white border rounded-xl shadow-md p-4">
+                        <div className="lg:w-[70%] bg-white border rounded-xl shadow-md p-4">
                             <h3 className="text-sm font-semibold text-gray-600 mb-2 uppercase">
                                 Sensor Signal (IR – RED)
                             </h3>
@@ -186,12 +186,12 @@ const TimedBallTest = () => {
                                 chartType="line"
                                 controls={controls}
                             />
-                        </div> */}
+                        </div>
 
                     </div>
                 </div>
             </div>
-        </div>
+        
     );
 };
 

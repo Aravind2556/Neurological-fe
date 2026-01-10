@@ -89,7 +89,7 @@ export default function Cognitive() {
         else setAccuracy("Below 10%");
     };
     return (
-        <div className="p-4 sm:p-6 md:p-10 min-h-screen bg-gray-50">
+        <div className="px-3 md:px-10 py-6">
 
             {/* Title */}
             <h1 className="text-2xl text-center mb-4 font-bold">
