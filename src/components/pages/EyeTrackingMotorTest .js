@@ -2,25 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaceMesh } from "@mediapipe/face_mesh";
 import { Camera } from "@mediapipe/camera_utils";
 
-const TEST_DURATION = 60; // seconds
-const FPS = 30;
+const TEST_TIME = 60;
 
-const EyeTrackingFullTest = () => {
+const EyeTrackingStrictExam = () => {
     const videoRef = useRef(null);
     const ballRef = useRef(null);
     const timerRef = useRef(null);
     const moveRef = useRef(null);
 
-    const [cameraOn, setCameraOn] = useState(false);
     const [running, setRunning] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(TEST_DURATION);
-    const [focusTime, setFocusTime] = useState(0);
-    const [violations, setViolations] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(TEST_TIME);
     const [result, setResult] = useState(null);
 
-    /* =========================
-       CAMERA + FACEMESH INIT
-       ========================= */
+    /* ================= CAMERA INIT ================= */
     useEffect(() => {
         const faceMesh = new FaceMesh({
             locateFile: (file) =>
@@ -43,24 +37,29 @@ const EyeTrackingFullTest = () => {
         });
 
         camera.start();
-        setCameraOn(true);
     }, []);
 
-    /* =========================
-       FACEMESH RESULT LOGIC
-       ========================= */
+    /* ================= FACEMESH RESULTS ================= */
     const onResults = (results) => {
         if (!running) return;
 
         if (!results.multiFaceLandmarks?.length) {
-            registerViolation("Face not detected. Please stay in front of camera.");
+            failTest("Face not detected");
             return;
         }
 
         const lm = results.multiFaceLandmarks[0];
+
+        // HEAD STRAIGHT CHECK
+        const nose = lm[1];
+        if (nose.x < 0.35 || nose.x > 0.65) {
+            failTest("Face turned away from screen");
+            return;
+        }
+
+        // EYE CHECK
         const leftIris = lm[468];
         const rightIris = lm[473];
-
         const eyeX = (leftIris.x + rightIris.x) / 2;
         const eyeY = (leftIris.y + rightIris.y) / 2;
 
@@ -74,51 +73,30 @@ const EyeTrackingFullTest = () => {
             Math.abs(eyeX - ballX) < threshold &&
             Math.abs(eyeY - ballY) < threshold;
 
-        if (focused) {
-            setFocusTime((t) => t + 1 / FPS);
-        } else {
-            registerViolation("Focus lost. Please look at the moving ball.");
+        if (!focused) {
+            failTest("Eye focus lost");
         }
     };
 
-    /* =========================
-       VIOLATION HANDLER
-       ========================= */
-    const registerViolation = (message) => {
-        setViolations((v) => v + 1);
-        stopTest(message);
-    };
-
-    /* =========================
-       BALL MOVEMENT
-       ========================= */
+    /* ================= BALL MOVE ================= */
     const moveBall = () => {
         const x = Math.random() * (window.innerWidth - 40);
         const y = Math.random() * (window.innerHeight - 40);
         ballRef.current.style.transform = `translate(${x}px, ${y}px)`;
     };
 
-    /* =========================
-       START TEST
-       ========================= */
+    /* ================= START ================= */
     const startTest = () => {
-        if (!cameraOn) {
-            alert("Camera ON pannunga");
-            return;
-        }
-
         setRunning(true);
         setResult(null);
-        setTimeLeft(TEST_DURATION);
-        setFocusTime(0);
-        setViolations(0);
+        setTimeLeft(TEST_TIME);
 
         moveRef.current = setInterval(moveBall, 500);
 
         timerRef.current = setInterval(() => {
             setTimeLeft((t) => {
                 if (t <= 1) {
-                    finishTest();
+                    passTest();
                     return 0;
                 }
                 return t - 1;
@@ -126,78 +104,55 @@ const EyeTrackingFullTest = () => {
         }, 1000);
     };
 
-    /* =========================
-       STOP TEST (FAIL)
-       ========================= */
-    const stopTest = (message) => {
+    /* ================= FAIL ================= */
+    const failTest = (reason) => {
         clearInterval(timerRef.current);
         clearInterval(moveRef.current);
         setRunning(false);
-
-        const score = ((focusTime / TEST_DURATION) * 100).toFixed(2);
-
         setResult({
             status: "FAIL",
-            score,
-            violations: violations + 1,
+            reason,
         });
-
-        alert(message);
     };
 
-    /* =========================
-       FINISH TEST (PASS)
-       ========================= */
-    const finishTest = () => {
+    /* ================= PASS ================= */
+    const passTest = () => {
         clearInterval(timerRef.current);
         clearInterval(moveRef.current);
         setRunning(false);
-
-        const score = Math.min(
-            (focusTime / TEST_DURATION) * 100,
-            100
-        ).toFixed(2);
-
         setResult({
             status: "PASS",
-            score,
-            violations,
         });
     };
 
-    /* =========================
-       UI
-       ========================= */
     return (
         <div className="w-screen h-screen bg-white overflow-hidden">
 
-            <video ref={videoRef} className="hidden" />
+            {/* CAMERA PREVIEW (VISIBLE) */}
+            <video
+                ref={videoRef}
+                className="fixed bottom-4 right-4 w-56 h-40 border rounded-lg"
+                autoPlay
+                muted
+            />
 
             {/* TIMER */}
             <div className="fixed top-4 right-6 text-xl font-bold">
                 ⏳ {timeLeft}s
             </div>
 
-            {/* STATS */}
-            <div className="fixed top-4 left-6 text-sm font-semibold space-y-1">
-                <div>🎯 Focus Time: {focusTime.toFixed(1)} s</div>
-                <div>❌ Violations: {violations}</div>
-            </div>
-
             {/* BALL */}
             <div
                 ref={ballRef}
-                className={`w-8 h-8 rounded-full absolute
-          ${running ? "bg-green-500" : "bg-gray-400"}
-        `}
+                className="w-8 h-8 rounded-full bg-green-500 absolute"
             />
 
-            {/* START BUTTON */}
+            {/* START */}
             {!running && !result && (
-                <div className="fixed bottom-12 w-full flex justify-center">
+                <div className="fixed inset-0 flex items-center justify-center">
                     <button
                         onClick={startTest}
-                        className="px-10 py-4 text-lg bg-blue-600 text-white rounded-xl shadow-lg"
+                        className="px-10 py-4 text-xl bg-blue-600 text-white rounded-xl"
                     >
                         START TEST
                     </button>
@@ -207,17 +162,20 @@ const EyeTrackingFullTest = () => {
             {/* RESULT */}
             {result && (
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
-                    <div className="bg-white rounded-xl p-8 text-center space-y-4 w-[300px]">
+                    <div className="bg-white p-8 rounded-xl text-center space-y-3 w-[320px]">
                         <h2 className="text-2xl font-bold">
-                            {result.status === "PASS" ? "✅ PASSED" : "❌ FAILED"}
+                            {result.status === "PASS" ? "✅ TEST PASSED" : "❌ TEST FAILED"}
                         </h2>
-                        <p>Score: <b>{result.score}%</b></p>
-                        <p>Violations: <b>{result.violations}</b></p>
+                        {result.reason && (
+                            <p className="text-red-600 font-semibold">
+                                {result.reason}
+                            </p>
+                        )}
                         <button
                             onClick={startTest}
                             className="mt-4 px-6 py-2 bg-green-600 text-white rounded"
                         >
-                            Retry Test
+                            Retry
                         </button>
                     </div>
                 </div>
@@ -226,4 +184,4 @@ const EyeTrackingFullTest = () => {
     );
 };
 
-export default EyeTrackingFullTest;
+export default EyeTrackingStrictExam;
