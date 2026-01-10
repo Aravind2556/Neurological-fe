@@ -59,12 +59,12 @@ export const MotorTest = () => {
     const f13 = lastRowValues[12] ?? 0
 
     return (
-        <div className="px-3 md:px-10 py-6 bg-gray-100">
+        <div className="px-3 md:px-10 py-6 bg-blue-50">
             {/* MAIN CARD */}
             <div className="bg-white border rounded-2xl shadow-lg p-6 space-y-6">
                 {/* HEADER */}
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-gray-800">
+                    <h2 className="text-3xl font-bold text-gray-700">
                         Motor Test Analysis
                     </h2>
                     <span className="text-sm px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">

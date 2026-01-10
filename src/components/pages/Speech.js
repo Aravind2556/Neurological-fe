@@ -5,9 +5,11 @@ import CustomApexChart from "../blocks/LiveChart";
 export default function Speech() {
     const [mode, setMode] = useState("numbers");
     const [activeModes, setActiveModes] = useState(["numbers"]);
+    const [refresh, setRefresh] = useState(false)
 
     const [numbers, setNumbers] = useState([]);
     const [words, setWords] = useState([]);
+    const [sentence, setSentence] = useState("");
 
     const blank = {
         ob: 0, rate: 0, pause: 0, pitch: 0, loudness: 0,
@@ -17,9 +19,6 @@ export default function Speech() {
     const [numbersValue, setNumbersValue] = useState(blank);
     const [wordsValue, setWordsValue] = useState(blank);
     const [sentenceValue, setSentenceValue] = useState(blank);
-
-    const sentence =
-        "Whenever you want to continue improving the cognitive game or anything else, just come back.";
 
 
     const controls = {
@@ -37,7 +36,7 @@ export default function Speech() {
 
     // ---------- UI helpers ----------
     const MetricCard = ({ title, value, unit }) => (
-        <div className="bg-white p-4 rounded-xl shadow-md border-l-4 border-teal-500">
+        <div className="bg-white p-4 rounded-xl shadow-md border-l-4 border-teal-500 h-28 w-60 ">
             <div className="text-sm text-gray-500">{title}</div>
             <div className="text-2xl font-bold text-gray-800">
                 {value} <span className="text-sm text-gray-400">{unit}</span>
@@ -46,10 +45,16 @@ export default function Speech() {
     );
 
     const SpeechBlock = ({ title, data }) => (
-        <div className="w-full bg-white p-6 rounded-xl shadow-lg mb-10">
+        <div className="w-full bg-white p-6 rounded-xl shadow-lg mb-10 ">
             <h2 className="text-lg font-semibold mb-4 text-gray-700">{title}</h2>
 
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-4 border bg-gray-50 p-3 rounded-xl flex gap-2 md:gap-7 flex-wrap items-center">
+                    <MetricCard title="Speech Rate" value={data.rate} unit="wpm" />
+                    <MetricCard title="Avg Pause" value={data.pause} unit="ms" />
+                    <MetricCard title="Avg Pitch" value={data.pitch} unit="Hz" />
+                    <MetricCard title="Loudness" value={data.loudness} unit="dB" />
+                </div>
                 <div className="col-span-2">
                     <CustomApexChart
                         data={[
@@ -67,12 +72,7 @@ export default function Speech() {
                     />
                 </div>
 
-                <div className="space-y-4">
-                    <MetricCard title="Speech Rate" value={data.rate} unit="wpm" />
-                    <MetricCard title="Avg Pause" value={data.pause} unit="ms" />
-                    <MetricCard title="Avg Pitch" value={data.pitch} unit="Hz" />
-                    <MetricCard title="Loudness" value={data.loudness} unit="dB" />
-                </div>
+
             </div>
         </div>
     );
@@ -88,10 +88,39 @@ export default function Speech() {
             setNumbers(Array.from({ length: 20 }, () => Math.floor(Math.random() * 20) + 1));
         }
         if (mode === "words") {
-            const list = ["lemon", "welcome", "javascript", "memory", "brain", "focus", "speech"];
-            setWords(Array.from({ length: 10 }, () => list[Math.floor(Math.random() * list.length)]));
+            const list = [
+                "BRAIN", "MEMORY", "FOCUS", "SPEECH", "THINK",
+                "MIND", "SMART", "LEARN", "RECALL", "LOGIC",
+                "AWARE", "CLEAR", "VOICE", "COGNITION",
+                "NEURON", "PERCEPTION", "LANGUAGE", "ATTENTION",
+                "HEARING", "VISION", "RESPONSE", "REACTION",
+                "ANALYSIS", "DECISION", "PROCESS", "UNDERSTAND",
+                "COMMUNICATE", "PRONUNCIATION", "ARTICULATION",
+                "VOCABULARY", "LISTEN", "READING", "WRITING",
+                "THOUGHT", "INTELLIGENCE", "CONCENTRATION",
+                "MENTAL", "VERBAL", "FLUENCY"
+            ];
+
+            setWords(Array.from({ length: 15 }, () => list[Math.floor(Math.random() * list.length)]));
         }
-    }, [mode]);
+
+        if (mode === "sentence") {
+            const sentenceBank = [
+                "The quick brown fox jumps over the lazy dog every single day.",
+                "Please speak clearly and slowly so everyone can understand your words.",
+                "I enjoy learning new things because it helps my mind grow stronger.",
+                "Reading aloud every day helps improve both speech and memory skills.",
+                "Technology makes our daily lives easier and much more efficient.",
+                "A calm and focused mind leads to better thinking and clear communication.",
+                "Good communication always helps people build strong and lasting relationships.",
+                "Regular practice makes your speaking more confident and more accurate.",
+                "Healthy habits improve both your physical health and mental performance.",
+                "Clear speech helps people understand your ideas without any confusion."
+            ];
+
+            setSentence(sentenceBank[Math.floor(Math.random() * sentenceBank.length)])
+        }
+    }, [mode, refresh]);
 
     // ---------- ThingSpeak ----------
     useEffect(() => {
@@ -102,48 +131,72 @@ export default function Speech() {
             const data = await res.json();
             if (!data.feeds?.length) return;
 
-            const feed = data.feeds[data.feeds.length - 1];
-            const time = new Date(feed.created_at).getTime();
+            const build = (field, setter) => {
+                const x = [];
+                const y = [];
+                let latest = [0, 0, 0, 0, 0];
 
-            const parse = (field, setter) => {
-                if (!field) return;
-                const v = field.split(",").map(Number);
+                data.feeds.forEach(feed => {
+                    if (!feed[field]) return;
 
-                setter(prev => ({
-                    ob: v[0] || 0,
-                    rate: v[1] || 0,
-                    pause: v[2] || 0,
-                    pitch: v[3] || 0,
-                    loudness: v[4] || 0,
-                    xAxis: [...prev.xAxis.slice(-50), time],
-                    yAxis: [...prev.yAxis.slice(-50), v[0] || 0]
-                }));
+                    const values = feed[field].split(",").map(Number);
+                    latest = values;
+
+                    x.push(new Date(feed.created_at).getTime());
+                    y.push(values[0]); // OB always first value
+                });
+
+                setter({
+                    ob: latest[0] || 0,
+                    rate: latest[1] || 0,
+                    pause: latest[2] || 0,
+                    pitch: latest[3] || 0,
+                    loudness: latest[4] || 0,
+                    xAxis: x.slice(-100),
+                    yAxis: y.slice(-100)
+                });
             };
 
-            parse(feed.field2, setNumbersValue);
-            parse(feed.field3, setWordsValue);
-            parse(feed.field4, setSentenceValue);
+            build("field2", setNumbersValue);
+            build("field3", setWordsValue);
+            build("field4", setSentenceValue);
         };
 
         fetchData();
-        const id = setInterval(fetchData, 3000);
+        const id = setInterval(fetchData, 5000);
         return () => clearInterval(id);
     }, []);
 
+
+    const handleRefresh = () => {
+        setRefresh(!refresh)
+    }
+
+
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+        <div className="min-h-screen p-6 bg-gray-50">
 
             {/* Header */}
-            <div className="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-xl mb-12">
+            <div className="mx-auto bg-white p-8 rounded-2xl shadow-xl mb-12">
+                <h1 className="text-3xl font-bold text-gray-700">
+                    Speech Test
+                </h1>
+                <div className="text-center mb-8 flex justify-between">
 
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-700">
-                        Speech & Cognitive Memory Test
-                    </h1>
                     <p className="text-gray-500 mt-2">
                         Read the content aloud while your speech patterns are analyzed
                     </p>
+
+                    <button
+                        onClick={handleRefresh}
+                        className={`px-8 py-3 rounded-full font-semibold tracking-wide transition-all  bg-gray-200 text-gray-600 hover:bg-red-100 `} >
+
+                        Refresh
+                    </button>
                 </div>
+
+
 
                 {/* Mode Buttons */}
                 <div className="flex justify-center gap-6 mb-10">
@@ -202,7 +255,7 @@ export default function Speech() {
             </div>
 
             {/* Charts */}
-            <div className="max-w-6xl mx-auto space-y-12">
+            <div className="mx-auto space-y-12">
                 {activeModes.includes("numbers") && (
                     <SpeechBlock title="Numbers Speech Analysis" data={numbersValue} />
                 )}

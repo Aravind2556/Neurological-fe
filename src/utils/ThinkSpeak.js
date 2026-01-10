@@ -1,1 +1,1 @@
-export const THINGSPEAK_URL = "https://api.thingspeak.com/channels/3224045/feeds.json?api_key=CBD19PC2GV9LNZ3L&results";
+export const THINGSPEAK_URL = "https://api.thingspeak.com/channels/3224875/feeds.json?api_key=XX3D9667I9DVZHDH&results";

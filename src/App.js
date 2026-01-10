@@ -5,7 +5,7 @@ import Register from './components/pages/Register';
 import { useContext } from 'react';
 import { DContext } from './context/Datacontext';
 import LoadingPage from './components/pages/Loading';
-import Home from './components/pages/Home';
+import {Home} from './components/pages/Home';
 import Header from './components/blocks/Header';
 import Footer from './components/blocks/Footer';
 import { ViewHistory } from './components/pages/ViewHistory';

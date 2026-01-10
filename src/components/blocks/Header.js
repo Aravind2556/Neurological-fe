@@ -39,7 +39,7 @@ const callsToAction = [
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const {isAuth, handleLogout} = useContext(DContext)
+  const { isAuth, handleLogout } = useContext(DContext)
 
   return (
     <header className="bg-white">
@@ -52,7 +52,7 @@ export default function Example() {
               src={Logo}
               className="h-[80px] w-auto"
             /> */}
-            <h1 className='font-bold text-primary-400'>HEMOGLOBIN</h1>
+            <h1 className='font-bold text-teal-600 text-2xl'>Neuro Logical</h1>
           </a>
         </div>
         <div className="flex lg:hidden">
@@ -67,15 +67,15 @@ export default function Example() {
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
 
-          <a href="/" className="text-sm/6 font-semibold text-gray-900">
+          <a href="/" className=" font-semibold text-gray-900">
             Home
           </a>
 
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {
-          isAuth?<button className='rounded-full px-4 py-1 text-md bg-secondary-500 hover:bg-secondary-600 text-white' onClick={handleLogout}>Logout</button>
-          :<button className='rounded-full px-4 py-1 text-md bg-secondary-500 hover:bg-secondary-600 text-white' onClick={()=>window.location.href="/login"} >Login</button>
+            isAuth ? <button className='rounded-full px-4 py-1 text-md font-medium bg-teal-500 hover:bg-teal-600 text-white' onClick={handleLogout}>Logout</button>
+              : <button className='rounded-full px-4 py-1 text-md bg-teal-500 hover:bg-teal-600 text-white' onClick={() => window.location.href = "/login"} >Login</button>
           }
         </div>
       </nav>
@@ -90,7 +90,7 @@ export default function Example() {
                 src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
                 className="h-8 w-auto"
               /> */}
-              <h1 className='font-bold text-primary-400'>HEMOGLOBIN</h1>
+              <h1 className='font-bold text-teal-400'>HEMOGLOBIN</h1>
             </a>
             <button
               type="button"
@@ -120,7 +120,7 @@ export default function Example() {
 
               </div>
               <div className="py-6">
-                <button className='rounded-full px-4 py-1 text-md bg-secondary-500 hover:bg-secondary-600 text-white' onClick={handleLogout}>Logout</button>
+                <button className='rounded-full px-4 py-1 text-md bg-teal-500 hover:bg-teal-600 text-white' onClick={handleLogout}>Logout</button>
               </div>
             </div>
           </div>
