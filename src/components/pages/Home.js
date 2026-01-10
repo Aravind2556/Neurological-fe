@@ -3,6 +3,11 @@ import LiveChart from '../blocks/LiveChart'
 import { DContext } from '../../context/Datacontext';
 import Cognitive from './Cognitive';
 import Speech from './Speech';
+import React from 'react'
+import { MotorTest } from './MotorTest';
+import { FieldFiveTest } from './FieldFiveTest';
+import EyeTrackingMotorTest from './EyeTrackingMotorTest ';
+import TimedBallTest from './TimeBallTest';
 
 // function Home() {
 
@@ -277,12 +282,17 @@ function Home() {
     <>
       <Cognitive />
       <Speech />
+      <div className="mx-auto px-4 py-4 space-y-6">
+        <MotorTest />
+        <FieldFiveTest />
+        {/* <EyeTrackingMotorTest /> */}
+        <TimedBallTest />
+      </div>
     </>
 
   )
-
+  
 }
-
 export default Home
 
 
