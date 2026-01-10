@@ -9,14 +9,12 @@ import TimedBallTest from './TimeBallTest'
 
 export const Home = () => {
   return (
-    <div className='md:px-40'>
+    <div>
       <MotorTest />
       <Speech />
-      <Cognitive />
-      
-      
       <FieldFiveTest />
       <TimedBallTest />
+      <Cognitive />
     </div>
   )
 }

@@ -132,14 +132,15 @@ export default function Speech() {
     }, []);
 
     return (
-        <div className="min-h-screen p-6 border rounded-2xl">
+        <div className="min-h-screen p-6 bg-gray-50">
 
             {/* Header */}
             <div className="mx-auto bg-white p-8 rounded-2xl shadow-xl mb-12">
+                <h1 className="text-3xl font-bold text-gray-700">
+                    Speech & Cognitive Memory Test
+                </h1>
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-700">
-                        Speech & Cognitive Memory Test
-                    </h1>
+
                     <p className="text-gray-500 mt-2">
                         Read the content aloud while your speech patterns are analyzed
                     </p>
