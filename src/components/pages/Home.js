@@ -3,7 +3,7 @@ import LiveChart from '../blocks/LiveChart'
 import { DContext } from '../../context/Datacontext';
 import Cognitive from './Cognitive';
 import Speech from './Speech';
-import React from 'react'
+// import React from 'react'
 import { MotorTest } from './MotorTest';
 import { FieldFiveTest } from './FieldFiveTest';
 import EyeTrackingMotorTest from './EyeTrackingMotorTest ';
