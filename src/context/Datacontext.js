@@ -220,7 +220,7 @@ const DataContext = ({children}) => {
         autoSelected: 'zoom'
     };
 
-    const data = { isAuth, currentUser, setIsAuth, setCurrentUser, BeURL, handleLogout, filedOneValue, filedTwoValue, filedThreeValue, filedFourValue, filedFiveValue, filedSixValue, controls }
+    const data = { isAuth, currentUser, setIsAuth, setCurrentUser, BeURL, handleLogout, filedOneValue, filedTwoValue, filedThreeValue, filedFourValue, filedFiveValue, filedSixValue, controls, fieldOne, fieldFive }
 
     return (
         <DContext.Provider value={data}>
