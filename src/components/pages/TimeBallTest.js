@@ -49,7 +49,7 @@ const TimedBallTest = () => {
         // immediate placement so ball is visible inside box at start
         setTimeout(() => moveBall(), 0);
 
-        moveRef.current = setInterval(moveBall, 500);
+        moveRef.current = setInterval(moveBall,2000);
 
         timerRef.current = setInterval(() => {
             setTimeLeft((t) => {
@@ -59,7 +59,7 @@ const TimedBallTest = () => {
                 }
                 return t - 1;
             });
-        }, 1000);
+        }, 3000);
     };
 
     /* ================= STOP TEST ================= */
@@ -140,7 +140,7 @@ const TimedBallTest = () => {
                 {/* BALL */}
                 <div
                     ref={ballRef}
-                    className={`w-8 h-8 rounded-full absolute transition-transform duration-300
+                    className={`w-8 h-8 rounded-full absolute transition-transform duration-700
             ${running ? "bg-green-500" : "bg-gray-400"}
           `}
                     // initial placement in center when not running

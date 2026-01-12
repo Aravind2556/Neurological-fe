@@ -65,6 +65,7 @@ export default function Speech() {
                                 color: "green"
                             }
                         ]}
+                        title="OB"
                         chartType="line"
                         lineStyle="straight"
                         lineWidth={2}
